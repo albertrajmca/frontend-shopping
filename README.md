@@ -1,4 +1,4 @@
-# myshop
+# ShopWave - An ECommerce web app
 
 ## Project setup
 ```
