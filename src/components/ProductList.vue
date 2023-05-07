@@ -4,10 +4,10 @@
       <v-navigation-drawer
         floating
         permanent
-        style="background-color: rgb(216, 191, 220)"
+        style="background-color: #84c3b9"
       >
         <v-list density="compact" nav>
-          <v-toolbar flat color="deep-purple-accent-4" dark>
+          <v-toolbar flat color="secondary" style="height:45px" dark>
             <v-btn icon>
               <v-icon>mdi-close</v-icon>
             </v-btn>
@@ -105,7 +105,7 @@
         </v-list>
       </v-navigation-drawer>
 
-      <v-app-bar color="primary" density="compact">
+      <v-app-bar color="secondary" density="compact">
         <v-app-bar-title>ShopWave</v-app-bar-title>
       </v-app-bar>
 
@@ -139,7 +139,7 @@
                       <div class="text-h8 mb-1">&#8377;{{ item.price }}</div>
                       <div class="text-h10 mb-1">{{ item.description }}</div>
 
-                      <v-btn variant="outlined" style="background-color: green">
+                      <v-btn variant="outlined" style="background-color:#E1F5FE">
                         {{ item.avg_rating }}*
                       </v-btn>
                     </div>
@@ -152,6 +152,8 @@
       </v-main>
     </v-layout>
   </v-card>
+
+  
 </template>
 
 <script>

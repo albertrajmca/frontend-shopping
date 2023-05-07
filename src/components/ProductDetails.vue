@@ -1,175 +1,186 @@
 <template>
-  <div>
+  <v-card :loading="loading" class="mx-auto my-12" max-width="374">
+    <img :src="product.image" alt="" />
 
- 
-    <div>
-      <img :src="product.image" alt="" />
-    </div>
-    <div>
-      <h1>{{ product.name }}</h1>
-      <p>{{ product.description }}</p>
-      <p>&#8377;{{ product.price }}</p>
-      <p class="product-rating">{{ product.avg_rating }}*</p>
+    <v-card-item>
+      <v-card-title>{{ product.name }}</v-card-title>
+    </v-card-item>
 
-      <div>
-        <h2>Product Reviews</h2>
-        <ul>
-          <li v-for="oldreview in product.reviews" :key="oldreview.id">
-            <div>Title: {{ oldreview.title }} - {{ oldreview.user.name }}</div>
-            <div>Rating: {{ oldreview.rating }}</div>
-            <div>Comment: {{ oldreview.comment }}</div>
-            <hr />
-          </li>
-        </ul>
+    <v-card-text>
+      <v-row align="center" class="mx-0">
+        <v-rating
+          :model-value="product.avg_rating"
+          color="amber"
+          density="compact"
+          half-increments
+          readonly
+          size="small"
+        ></v-rating>
+
+        <div class="text-grey ms-4">
+          {{ product.avg_rating }}
+        </div>
+      </v-row>
+
+      <div class="my-4 text-subtitle-1">&#8377;{{ product.price }}</div>
+
+      <div>{{ product.description }}</div>
+    </v-card-text>
+
+    <v-divider class="mx-4 mb-1"></v-divider>
+
+    <v-container>
+      <v-card
+        v-for="(item, index) in product.reviews"
+        :key="index"
+        class="mx-auto"
+        color="white"
+        theme="dark"
+        max-width="400"
+      >
+        <v-card-title>{{ item.title }}</v-card-title>
+        <template v-slot:prepend>
+          <v-icon size="x-large"></v-icon>
+        </template>
+
+        <v-card-text class="text-h5 py-2">
+          {{ item.comment }}
+        </v-card-text>
+
+        <v-card-actions>
+          <v-list-item class="w-100">
+            <v-list-item-title>{{ item.user.name }}</v-list-item-title>
+            <v-list-item-subtitle>
+              <v-rating
+                :model-value="item.rating"
+                color="amber"
+                density="compact"
+                half-increments
+                readonly
+                size="small"
+              ></v-rating>
+            </v-list-item-subtitle>
+          </v-list-item>
+        </v-card-actions>
+
+        <v-divider v-if="index !== product.reviews.length - 1"></v-divider>
+      </v-card>
+     </v-container>
+
+     <v-divider class="mx-4 mb-1"></v-divider>
+
+      <v-card-title>Leave a comment</v-card-title>
+
+      <div class="px-4">
+        <v-sheet width="300" class="mx-auto">
+          <v-form ref="myForm" @submit.prevent="submitReview">
+            <v-text-field v-model="title" label="Title"></v-text-field>
+            <v-text-field v-model="rating" label="Rating (1-5)" type="number" :rules="[ratingRule]"></v-text-field>
+            <v-textarea v-model="comments" label="Comments" variant="outlined"></v-textarea>          
+            <v-btn class="submit-btn" variant="outlined" type="submit">Submit Review</v-btn>
+          </v-form>
+        </v-sheet>
       </div>
-
-      <div class="review-form">
-        <h2>Submit a Review</h2>
-        <form @submit.prevent="submitReview">
-          <div class="form-group">
-            <v-text-field v-model="title" label="Title" variant="outlined"></v-text-field>
-          </div>
-          <div class="form-group">
-            <label>Star</label>
-            <v-radio-group v-model="rating" inline>
-              <v-radio label="*" value="1"></v-radio>
-              <v-radio label="**" value="2"></v-radio>
-              <v-radio label="***" value="3"></v-radio>
-              <v-radio label="****" value="4"></v-radio>
-              <v-radio label="*****" value="5"></v-radio>
-            </v-radio-group>
-          </div>
-          <div class="form-group">
-            <v-textarea v-model="comments" label="Comments" variant="outlined"></v-textarea>
-          </div>
-          <div class="form-group">
-            <v-btn class="submit-btn" variant="outlined" type="submit">
-              Submit Review
-            </v-btn>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
+  </v-card>
 </template>
 
 <script>
 import axios from "axios";
-const apiToken = localStorage.getItem('api_token');
 export default {
   props: ["id"],
   data() {
     return {
+      baseUrl: 'http://localhost:8000/api',
       product: {},
-      title: '',
-      rating: '',
-      comments: ''
+      title: "",
+      rating: "",
+      comments: "",
+      formSubmitted: false 
     };
   },
   methods: {
-    submitReview() {
-        axios.post(`http://localhost:8000/api/products/${this.id}/review`, {
-            title: this.title,
-            rating: this.rating,
-            comment: this.comments
-        }, {
-            headers: {
-                Authorization: `Bearer ${apiToken}`
-            }
-        })
-        .then(response => {
-            console.log(response.data);
-            axios.get(`http://localhost:8000/api/products/${this.id}/show`)
-            .then((productDetailsResponse) => {
-              this.product = productDetailsResponse.data.data;
-            });
-        })
-        .catch(error => {
-            console.log(error);
-        });
-    
-      
-    },
-  },
-  mounted() {
-    // show api
-    axios
-      .get(`http://localhost:8000/api/products/${this.id}/show`)
+
+    loadProduct() {
+      axios
+      .get(`${this.baseUrl}/products/${this.id}/show`)
       .then((response) => {
         this.product = response.data.data;
       });
+    },
+
+    submitReview() {
+
+      const apiToken = localStorage.getItem("api_token");
+      axios
+        .post(
+          `${this.baseUrl}/products/${this.id}/review`,
+          {
+            title: this.title,
+            rating: this.rating,
+            comment: this.comments,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${apiToken}`,
+            },
+          }
+        )
+        .then((response) => {
+          this.formSubmitted = true; 
+          console.log(response.data);
+          this.loadProduct();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+        this.title = ""; // Clear the input fields after successful submission
+          this.rating = "";
+          this.comments = "";
+        // this.$refs.myForm.reset();
+
+    },
+  },
+  mounted() {
+    const apiToken = localStorage.getItem("api_token");
+
+    // show api
+    this.loadProduct();
 
     if (!apiToken) {
-        // sign up and get token api 
-        axios.post('http://localhost:8000/api/users/signup', {
-          name: 'random user',
-          email: 'example1@example.com',
-          password: 'mypassword',
-          password_confirmation: 'mypassword'
+      // sign up and get token api
+      axios
+        .post(`${this.baseUrl}/users/signup`, {
+          name: "Albert Raj",
+          email: "example4@example.com",
+          password: "mypassword",
+          password_confirmation: "mypassword",
         })
-        .then(response => {
-            // Store the API token in a cookie or local storage
-            const apiToken = response.data.token;
-            localStorage.setItem('api_token', apiToken);
+        .then((response) => {
+          // Store the API token in a cookie or local storage
+          const apiToken = response.data.token;
+          localStorage.setItem("api_token", apiToken);
         })
-        .catch(error => {
-            console.log(error);
+        .catch((error) => {
+          console.log(error);
         });
     }
   },
+
+  computed: {
+    ratingRule() {
+      return (value) => {
+        if (this.formSubmitted && !value) return 'Rating is required'; // Only show error message if formSubmitted is true and value is empty
+        if (value < 1 || value > 5) return 'Rating must be between 1 and 5';
+        return true;
+      }
+    }
+  }
 };
 </script>
 
 <style scoped>
-.review-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.form-group {
-  margin-bottom: 20px;
-  width: 100%;
-  max-width: 500px;
-}
-
 .submit-btn {
-  width: 100%;
-  max-width: 500px;
+margin-bottom: 14px;
+    background-color: skyblue;
 }
-
-div {
-  margin: 5px 0;
-  padding: 5px;
-  border: 1px solid #ccc;
-}
-
-h2 {
-  font-size: 18px;
-  margin: 0 0 10px;
-}
-
-ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-li {
-  margin: px 0;
-  padding: 5px;
-  /* border: 1px solid #eee; */
-}
-
-div > div {
-  margin: 5px 0;
-}
-
-hr {
-  border: none;
-  border-top: 1px solid #eee;
-  margin: 3px 0;
-}
-
 </style>
