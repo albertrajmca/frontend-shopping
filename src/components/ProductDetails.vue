@@ -72,16 +72,20 @@
       <v-card-title>Leave a comment</v-card-title>
       <div class="px-4">
         <v-sheet width="300" class="mx-auto">
+          <div v-if="apiToken">
           <v-form @submit.prevent="submitReview">
             <v-text-field v-model="title" label="Title"></v-text-field>
             <v-text-field v-model="rating" label="Rating (1-5)" type="number" :rules="[ratingRule]"></v-text-field>
             <v-textarea v-model="comments" label="Comments" variant="outlined"></v-textarea>          
             <v-btn class="submit-btn" variant="outlined" type="submit">Submit Review</v-btn>
           </v-form>
-          <v-btn class="button" type="button" variant="outlined">
-              <router-link class="button" v-if="!apiToken" :to="{ name: 'signup' }">Sign Up
-              </router-link>
-            </v-btn> <span>(Req to leave a comment)</span>
+          </div>
+          <div v-if="!apiToken">
+            <v-btn class="button" type="button"  variant="outlined">
+                <router-link class="button"  :to="{ name: 'signup' }">Sign Up
+                </router-link>
+            </v-btn> <span>(sign up required)</span>
+        </div>
         </v-sheet>
       </div>
 
