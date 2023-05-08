@@ -4,13 +4,15 @@
         v-model="name"
         :rules="[rules.required]"
         label="Name"
-        required
+        required 
+        data-cy="name-field"
       ></v-text-field>
       <v-text-field
         v-model="email"
         :rules="[rules.required, rules.email]"
         label="Email"
         required
+        data-cy="email-field"
       ></v-text-field>
       <v-text-field
         v-model="password"
@@ -18,6 +20,7 @@
         label="Password"
         type="password"
         required
+        data-cy="password-field"
       ></v-text-field>
       <v-text-field
         v-model="confirmPassword"
@@ -25,8 +28,9 @@
         label="Confirm Password"
         type="password"
         required
+        data-cy="con-password-field"
       ></v-text-field>
-      <v-btn @click="submitForm" :disabled="!valid">Submit</v-btn>
+      <v-btn @click="submitForm" data-cy="submit" :disabled="!valid">Submit</v-btn>
     </v-form>
   </template>
   
