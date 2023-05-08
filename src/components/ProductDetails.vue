@@ -70,7 +70,6 @@
      <v-divider class="mx-4 mb-1"></v-divider>
 
       <v-card-title>Leave a comment</v-card-title>
-
       <div class="px-4">
         <v-sheet width="300" class="mx-auto">
           <v-form @submit.prevent="submitReview">
@@ -79,9 +78,12 @@
             <v-textarea v-model="comments" label="Comments" variant="outlined"></v-textarea>          
             <v-btn class="submit-btn" variant="outlined" type="submit">Submit Review</v-btn>
           </v-form>
+          <v-btn class="button" type="button" variant="outlined">
+              <router-link class="button" v-if="!apiToken" :to="{ name: 'signup' }">Sign Up
+              </router-link>
+            </v-btn> <span>(Req to leave a comment)</span>
         </v-sheet>
       </div>
-      <router-link v-if="!apiToken" :to="{ name: 'signup' }">Sign Up</router-link>
 
   </v-card>
 </template>
@@ -167,7 +169,15 @@ export default {
 
 <style scoped>
 .submit-btn {
-margin-bottom: 14px;
+    margin-bottom: 14px;
     background-color: skyblue;
 }
+
+ .button {
+  background-color: skyblue;
+  border: none;
+  color: black;
+  text-decoration: none; 
+  border-radius: 5px;
+ }
 </style>
