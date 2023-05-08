@@ -73,7 +73,7 @@
 
       <div class="px-4">
         <v-sheet width="300" class="mx-auto">
-          <v-form ref="myForm" @submit.prevent="submitReview">
+          <v-form @submit.prevent="submitReview">
             <v-text-field v-model="title" label="Title"></v-text-field>
             <v-text-field v-model="rating" label="Rating (1-5)" type="number" :rules="[ratingRule]"></v-text-field>
             <v-textarea v-model="comments" label="Comments" variant="outlined"></v-textarea>          
@@ -81,6 +81,8 @@
           </v-form>
         </v-sheet>
       </div>
+      <router-link v-if="!apiToken" :to="{ name: 'signup' }">Sign Up</router-link>
+
   </v-card>
 </template>
 
@@ -88,6 +90,7 @@
 import axios from "axios";
 export default {
   props: ["id"],
+
   data() {
     return {
       baseUrl: 'http://localhost:8000/api',
@@ -95,7 +98,7 @@ export default {
       title: "",
       rating: "",
       comments: "",
-      formSubmitted: false 
+      formSubmitted: false ,
     };
   },
   methods: {
@@ -133,40 +136,24 @@ export default {
         .catch((error) => {
           console.log(error);
         });
-        this.title = ""; // Clear the input fields after successful submission
+          this.title = ""; // Clear the input fields after successful submission
           this.rating = "";
           this.comments = "";
-        // this.$refs.myForm.reset();
-
     },
   },
   mounted() {
-    const apiToken = localStorage.getItem("api_token");
+    // get the product id from the route params
+    const productId = this.$route.params.id;
+    // store the product id in local storage
+    localStorage.setItem('product_id', productId);
 
-    // show api
     this.loadProduct();
-
-    if (!apiToken) {
-      // sign up and get token api
-      axios
-        .post(`${this.baseUrl}/users/signup`, {
-          name: "Albert Raj",
-          email: "example4@example.com",
-          password: "mypassword",
-          password_confirmation: "mypassword",
-        })
-        .then((response) => {
-          // Store the API token in a cookie or local storage
-          const apiToken = response.data.token;
-          localStorage.setItem("api_token", apiToken);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
   },
 
   computed: {
+    apiToken() {
+      return localStorage.getItem("api_token");
+    },
     ratingRule() {
       return (value) => {
         if (this.formSubmitted && !value) return 'Rating is required'; // Only show error message if formSubmitted is true and value is empty
