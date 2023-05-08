@@ -75,7 +75,7 @@
           <div v-if="apiToken">
           <v-form @submit.prevent="submitReview">
             <v-text-field v-model="title" label="Title"></v-text-field>
-            <v-text-field v-model="rating" label="Rating (1-5)" type="number" :rules="[ratingRule]"></v-text-field>
+            <v-text-field v-model="rating" label="Rating (1-5)"  type="number" :rules="[ratingRule]"></v-text-field>
             <v-textarea v-model="comments" label="Comments" variant="outlined"></v-textarea>          
             <v-btn class="submit-btn" variant="outlined" type="submit">Submit Review</v-btn>
           </v-form>
@@ -183,5 +183,6 @@ export default {
   color: black;
   text-decoration: none; 
   border-radius: 5px;
+  margin-bottom: 5px;
  }
 </style>
