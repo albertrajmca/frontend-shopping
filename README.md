@@ -24,12 +24,28 @@ npm run lint
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
 
+cypress e2e has been done for the sign up form 
 ```
-some screen shots for reference
+cypress open
+```
+```
+Follow the screens to see the test 
+```
+![alt text](./screenshots/cyp2.png)
+![alt text](./screenshots/cyp3.png)
+![alt text](./screenshots/cyp4.png)
+
+Click on the Signup :)
+
+![alt text](./screenshots/cyp5.png)
+
+![alt text](./screenshots/signup_cypress.png)
+```
+some screen shots from the application
 ```
 
 ![alt text](./screenshots/main.png)
 ![alt text](./screenshots/prod_upper.png)
 ![alt text](./screenshots/prod_lower.png)
-![alt text](./screenshots/signup_cypress.png)
+
 
